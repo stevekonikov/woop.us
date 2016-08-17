@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+<title>Temporary measures in AssaultCube :: Woop clan</title>
+<meta name="keywords" content="woop, woop clan, w00p clan, w00p, sauerbraten clan, sauer clan, assaultcube clan, assaultcube, sauer, sauerbraten, fps doug, pwnage, ownage">
+<meta name="description" content="Woop clan is a small gaming community that bases around open source games such as Sauerbraten">
+<meta name="author" content="Woop clan &lt;drakas@woop.us&gt;">
+<link href="/media/style.css" type="text/css" rel="stylesheet">
+<link href="/media/v2.css" type="text/css" rel="stylesheet">
+<link href="/feed/" type="application/atom+xml" rel="alternate">
+</head>
+<body>
+<div id="main">
+<div id="lw">
+<div id="rw">
+<div id="round_header"><div id="top_left"><div id="top_right"></div></div></div>
+<div id="submain">
+<div id="top">
+<p id="ircm">IRC: <a href="https://webchat.gamesurge.net/?channels=woop-clan" data-old-href="irc://irc.gamesurge.net/woop-clan">#woop-clan</a><span style="display:none"> (Internet Relay Chat channel)</span></p>
+
+<h1><a href="/"><span>Temporary measures in AssaultCube :: Woop clan</span></a></h1>
+</div>
+<div id="menu_w">
+<ul id="menu">
+<li><a href="/">Home</a></li>
+<li><a href="/players">Players</a></li>
+<li><a href="/talk">Talk</a></li>
+<li><a href="/servers">Servers</a></li>
+<li><a href="/join">Join</a></li>
+<li><a href="/about">About</a></li>
+</ul>
+<div class="clear"></div>
+</div>
+<div id="content">
+<a href="/feed/" id="rss_icon" title="Subscribe to Atom feeds"><img src="/images/feed-icon-16x16.png" alt="Feed icon"></a>
+<h2>Temporary measures in AssaultCube</h2><p>Since the recent <a href="http://assault.cubers.net/forum/comments.php?DiscussionID=2359#Item_0">intervention from the developers</a> to bring back the game to its original standards, there has still been a lot of backlash from players of the infamous maps bs_*, bs_dust2, ezjem**, *gema*. We have produced a small patch to the sourcecode of the AssaultCube server, which prevents these maps from getting voted and played.</p>
+
+<p>The patch is available here: <a href="/files/map_blacklist.patch">map_blacklist.patch</a>.</p>
+<p>How it works: it's just like any other blacklist file reloaded periodically. To enable map blacklisting, you have to edit 'config/mapblacklist.cfg'. Every new line denotes a separate entry. The lines are loaded, and when a vote for a map is called, it will be refused if the map's name contains text from any of those entries. For example, if the file looks like this:</p>
+<code><pre>dust2
+gema</pre></code>
+<p>Then if 'bs_dust2_night' is voted, it will be refused. Same goes for 'DUST2' or 'GEMA-IMPOSSIBLE' and so on.</p>
+<p>To use this patch, you need to know how to do compilation and patching yourself. I will not provide any binaries.</p>
+<p>A ridumentary blacklist file is available here: <a href="/files/mapblacklist.cfg">http://woop.us/files/mapblacklist.cfg</a>. You should re-download it periodically like any other blacklists you have.</p>
+<p>Update: here are the instructions for UNIX users on how to patch their servers (with a new patchfile).</p>
+<code><pre>$ cd AssaultCube/source
+$ cp -R src src.orig
+$ cd src
+$ wget 'http://woop.us/files/map_blacklist.patch'
+$ patch -p0 < map_blacklist.patch
+$ make server
+$ make install</pre></code>
+<p>Hope this clarifies things</p>
+<h3>For those curious ones</h3>
+<p>Even if you use the '-PX' switch, and have a list of official maps, there is a small workaround to actually get any maps to be played at the start of the game, and continue them to run repeatedly. As an example situation, you are not connected and load <code>/ctf bs_dust2</code>. Then you connect to <i>any</i> empty server, even with the switch enabled, and your map will suddenly be loaded. This is because the server requests the name of the next map from the client or so.</p><hr><address>Posted on Monday, 20th July 2009 by Drakas</address><!-- Last Modified: $Date: Mon, 07 Sep 2009 12:54:36 +0000$ by Drakas -->
+</div>
+<div id="bottom">&copy; Woop clan 2016.<ul id="blink"><li><a href="/sys/">Admin</a></li><li><a href="/sitemap">Site map</a></li></ul>
+	</div>
+</div>
+<div id="round_footer"><div id="bottom_left"><div id="bottom_right"></div></div></div>
+</div>
+</div>
+</div>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-80538321-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+</body>
+</html>
