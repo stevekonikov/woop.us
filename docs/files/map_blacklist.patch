@@ -1,0 +1,97 @@
+--- server.cpp.orig	2009-07-21 11:12:51.000000000 +0100
++++ server.cpp	2009-07-20 14:23:49.000000000 +0100
+@@ -1633,6 +1633,50 @@
+ 
+ int cmpipmatch(const struct iprange *a, const struct iprange *b) { return - (a->lr < b->lr) + (a->lr > b->ur); }
+ 
++struct blmap { string match; };
++vector<blmap> mapblacklist;
++void readmblacklist(const char *name)
++{
++    static string mblfilename;
++    static int mblfilesize;
++    char *p, *l, *r;
++    int len, line = 0, errors = 0;
++
++    if(!name && getfilesize(mblfilename) == mblfilesize) return;
++    mapblacklist.setsize(0);
++    char *buf = loadcfgfile(mblfilename, name, &len);
++    mblfilesize = len;
++    if(!buf) return;
++    p = buf;
++    logline(ACLOG_VERBOSE,"reading map blacklist '%s'", mblfilename);
++	blmap bah;
++    while(p < buf + len)
++    {
++        l = p; p += strlen(p) + 1; line++;
++		s_strcpy(bah.match,l);
++		strtoupper(bah.match);
++		mapblacklist.add(bah);
++        if(l[strspn(l, " ")])
++        {
++            for(int i = strlen(l) - 1; i > 0 && l[i] == ' '; i--) l[i] = '\0';
++        }
++    }
++    delete[] buf;
++    int orglength = mapblacklist.length();
++    logline(ACLOG_INFO,"read %d (%d) map blacklist entries from '%s', %d errors", mapblacklist.length(), orglength, mblfilename, errors);
++}
++bool checkmapblacklist(const char *name)
++{
++	string lname;
++	s_strcpy(lname,name);
++	strtoupper(lname);
++	loopv(mapblacklist)
++	{
++		if (strstr(lname,mapblacklist[i].match)) return true;
++	};
++	return false;
++};
++
+ vector<iprange> ipblacklist;
+ 
+ void readipblacklist(const char *name)
+@@ -2164,6 +2208,7 @@
+     if(notify)
+     {
+         // change map
++		if (checkmapblacklist(smapname)) s_strcpy(smapname,"maps/ac_complex");
+         sendf(-1, 1, "risii", SV_MAPCHANGE, smapname, smode, mapavailable(smapname));
+         if(smode>1 || (smode==0 && numnonlocalclients()>0)) sendf(-1, 1, "ri2", SV_TIMEUP, minremain);
+     }
+@@ -3492,6 +3537,7 @@
+     readscfg(NULL);
+     readpwdfile(NULL);
+     readipblacklist(NULL);
++	readmblacklist(NULL);
+     nbl.readnickblacklist(NULL);
+ }
+ 
+@@ -3900,6 +3946,7 @@
+         readscfg(scl.maprot);
+         readpwdfile(scl.pwdfile);
+         readipblacklist(scl.blfile);
++        readmblacklist(scl.mblfile);
+         nbl.readnickblacklist(scl.nbfile);
+         getserverinfo("en"); // cache 'en' serverinfo
+         if(scl.demoeverymatch) logline(ACLOG_VERBOSE, "recording demo of every game (holding up to %d in memory)", scl.maxdemos);
+--- protos.h.orig	2009-07-21 11:12:41.000000000 +0100
++++ protos.h	2009-07-20 02:29:21.000000000 +0100
+@@ -721,7 +721,7 @@
+ struct servercommandline
+ {
+     int uprate, serverport, syslogfacility, filethres, syslogthres, maxdemos, maxclients, kickthreshold, banthreshold, verbose;
+-    const char *ip, *master, *logident, *serverpassword, *adminpasswd, *demopath, *maprot, *pwdfile, *blfile, *nbfile, *infopath;
++    const char *ip, *master, *logident, *serverpassword, *adminpasswd, *demopath, *maprot, *pwdfile, *blfile, *mblfile, *nbfile, *infopath;
+     bool demoeverymatch, logtimestamp;
+     string motd, servdesc_full, servdesc_pre, servdesc_suf, voteperm;
+     int clfilenesting;
+@@ -730,7 +730,7 @@
+     servercommandline() :   uprate(0), serverport(CUBE_DEFAULT_SERVER_PORT), syslogfacility(6), filethres(-1), syslogthres(-1), maxdemos(5),
+                             maxclients(DEFAULTCLIENTS), kickthreshold(-5), banthreshold(-6), verbose(0),
+                             ip(""), master(NULL), logident(""), serverpassword(""), adminpasswd(""), demopath(""),
+-                            maprot("config/maprot.cfg"), pwdfile("config/serverpwd.cfg"), blfile("config/serverblacklist.cfg"), nbfile("config/nicknameblacklist.cfg"),
++                            maprot("config/maprot.cfg"), pwdfile("config/serverpwd.cfg"), blfile("config/serverblacklist.cfg"), mblfile("config/mapblacklist.cfg"), nbfile("config/nicknameblacklist.cfg"),
+                             infopath("config/serverinfo"),
+                             demoeverymatch(false), logtimestamp(false),
+                             clfilenesting(0)
