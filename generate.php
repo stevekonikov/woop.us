@@ -186,6 +186,7 @@ function generate_it($template, $items, $target_path) {
 			var_dump("WTF ".$path." (".$id.")");
 		}
 		$template->saveHTMLFile($path);
+		echo "saved to $path\n";
 	}
 	display_archive($template, $items);
 	$template->saveHTMLFile("$target_path/archive.html");
