@@ -186,8 +186,9 @@ function generate_it($template, $items, $target_path) {
 			var_dump("WTF ".$path." (".$id.")");
 		}
 		$template->saveHTMLFile($path);
-		echo "saved to $path\n";
+		// echo "saved to $path\n";
 	}
+	file_put_contents("$target_path/CNAME", "woop.us");
 	display_archive($template, $items);
 	$template->saveHTMLFile("$target_path/archive.html");
 	display_index($template, $items);
