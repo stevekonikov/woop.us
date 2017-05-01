@@ -1,9 +1,0 @@
-1. Set up Hook at http://git.watch/
-2. npm install -g gitwatch-client
-3. ssh-keygen
-4. Copy key to repository deploy keys with write access
-5. git clone git@github.com:ScalaWilliam/woop.us.git
-6. cd woop.us
-7. git clone git@github.com:ScalaWilliam/woop.us.git --branch gh-pages out
-8. Install PHP 7
-9. screen ./watch.sh
