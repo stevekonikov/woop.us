@@ -8,4 +8,5 @@ deploy:
   on:
     branch: master
 language: php
-
+php:
+  - '7.0'
